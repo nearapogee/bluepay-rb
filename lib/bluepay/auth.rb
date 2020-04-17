@@ -1,5 +1,3 @@
-require 'bluepay/BP10EMU'
-
 module Bluepay
   class Auth < Transaction
     include BP10EMU

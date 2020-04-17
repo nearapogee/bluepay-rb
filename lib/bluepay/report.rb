@@ -1,12 +1,16 @@
 module Bluepay
-  class Transaction
+  class Report
+    include BPDAILYREPORT2
 
     attr_reader :params, :source
     attr_reader :request, :response
 
+    def self.generate!(params={})
+      new(params).generate!
+    end
+
     def initialize(params={})
       @params = params
-      @source = params.delete(:source)
     end
 
     def bluepay_params
@@ -15,39 +19,28 @@ module Bluepay
         memo[k.to_s.upcase] = v
         memo
       }
-      _bluepay_params.merge! source.bluepay_params
 
       _bluepay_params['MODE'] ||= Bluepay.mode.to_s.upcase
       _bluepay_params['TPS_HASH_TYPE'] ||= Bluepay.hash_type
       _bluepay_params['RESPONSEVERSION'] ||= Bluepay.response_version
       _bluepay_params['TAMPER_PROOF_SEAL'] = tps(
         _bluepay_params['TPS_HASH_TYPE'],
-        _bluepay_params['TRANSACTION_TYPE'],
-        _bluepay_params['AMOUNT'],
-        _bluepay_params['REBILLING'],
-        _bluepay_params['REB_FIRST_DATE'],
-        _bluepay_params['REB_EXPR'],
-        _bluepay_params['REB_CYCLES'],
-        _bluepay_params['REB_AMOUNT'],
-        _bluepay_params['RRNO'],
-        _bluepay_params['MODE']
+        _bluepay_params['REPORT_START_DATE'],
+        _bluepay_params['REPORT_END_DATE']
       )
 
       _bluepay_params
     end
 
-    def create!
+    def generate!
       @request = Request.new(self)
       @response = request.post
-      _params = response.params
-
-      (class << self; self; end).class_eval do
-        _params.each { |k, v| define_method(k) { v } }
-      end
       self
     end
 
+    def rows
+      response.data
+    end
+    
   end
 end
-
-require "bluepay/auth"

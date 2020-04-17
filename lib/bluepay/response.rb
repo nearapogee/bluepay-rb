@@ -10,11 +10,12 @@ module Bluepay
     end
 
     def bluepay_params
-      if response[LOCATION]
-        URI.decode_www_form(URI(response['Location']).query).sort.to_h
-      else
-        URI.decode_www_form(response.body).sort.to_h
-      end
+      URI.decode_www_form(URI(response['Location'].to_s).query).sort.to_h
+    end
+
+    def bluepay_data
+      require 'csv'
+      csv = CSV.parse(response.body, headers: true)
     end
 
     def params
@@ -23,6 +24,10 @@ module Bluepay
         memo[k.to_s.downcase.to_sym] = v
         memo
       }
+    end
+
+    def data
+      bluepay_data.each.map {|r| OpenStruct.new(r.to_h)}
     end
 
     def code

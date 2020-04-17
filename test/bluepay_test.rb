@@ -10,7 +10,6 @@ class BluepayTest < Minitest::Test
       amount: "0.00",
       rrno: nil,
 
-      # "PAYMENT_TYPE"=>"CREDIT",
       source: Bluepay::Card.new(
         cc_num: '4111111111111111',
         cc_expires: '1227',
@@ -33,6 +32,17 @@ class BluepayTest < Minitest::Test
       "should return a trans_id"
     assert_equal 302, auth.response.code
     assert_equal 'INFORMATION STORED', auth.message
+  end
+
+  def test_run_transaction_report
+    report = Bluepay::Report.generate!(
+      report_start_date: '2020-04-01',
+      report_end_date: '2020-04-30'
+    )
+    assert report.rows.any?,
+      'should have some data'
+    assert report.rows.first.id,
+      'should should have an id'
   end
 
   def approved_test_amount

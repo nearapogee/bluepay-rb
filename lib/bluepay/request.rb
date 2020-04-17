@@ -41,25 +41,5 @@ module Bluepay
       Response.new(res)
     end
 
-    def tps_rebill
-      @PARAM_HASH["TAMPER_PROOF_SEAL"] = tps_hash(
-        @ACCOUNT_ID +
-        @PARAM_HASH["TRANS_TYPE"] +
-        @PARAM_HASH["REBILL_ID"],
-        @PARAM_HASH['TPS_HASH_TYPE']
-      )
-    end
-
-    # move to ReportApi superclass
-    # Sets TAMPER_PROOF_SEAL in @PARAM_HASH for bpdailyreport2 API
-    def tps_report
-      @PARAM_HASH["TAMPER_PROOF_SEAL"] = tps_hash(
-        @ACCOUNT_ID +
-        @PARAM_HASH["REPORT_START_DATE"] +
-        @PARAM_HASH["REPORT_END_DATE"],
-        @PARAM_HASH['TPS_HASH_TYPE']
-      )
-    end
-
   end
 end
