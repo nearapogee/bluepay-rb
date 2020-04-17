@@ -1,8 +1,6 @@
 # Bluepay::Rb
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/bluepay/rb`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Simple Bluepay API Wrapper.
 
 ## Installation
 
@@ -22,7 +20,37 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```
+Bluepay.account_id = "blah"
+Bluepay.account_secret = "supersecret"
+Bluepay.mode = :live
+
+
+Bluepay::Transaction.new(
+  amount: 1000,
+  source: Bluepay::Card.new(
+    # trans_id / card numbers
+    name: '',
+    address: ''
+  )
+).create!
+
+Bluepay::Card.new(
+  # card num
+).save!
+Bluepay::BankAccount.new(
+  # routing, account etc
+).save!
+# => card with trans_id (call auth)
+Bluepay::Transaction.retrieve('10080152343') # trans_id - via stq
+# => Transaction
+Bluepay::Report.retrieve(
+  id: '10008..',
+  starts_on: Date.new
+  ends_on: Date.new
+) # trans_id
+#=> <instnace of Report>.lines
+```
 
 ## Development
 

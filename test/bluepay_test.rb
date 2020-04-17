@@ -5,7 +5,42 @@ class BluepayTest < Minitest::Test
     refute_nil ::Bluepay::VERSION
   end
 
-  #def test_it_does_something_useful
-  #  assert false
-  #end
+  def test_run_auth
+    auth = Bluepay::Auth.new(
+      amount: "0.00",
+      rrno: nil,
+
+      # "PAYMENT_TYPE"=>"CREDIT",
+      source: Bluepay::Card.new(
+        cc_num: '4111111111111111',
+        cc_expires: '1227',
+        cvcvv2: "723",
+        name1: 'Bobby',
+        name2: 'Tester',
+        addr1: '123 Test St.',
+        addr2: 'Apt #500',
+        city: 'Testville',
+        state: 'IL',
+        zipcode: '94321',
+        country: 'USA',
+        phone: '123-123-1234',
+        email: 'test@bluepay.com',
+        company_name: ''
+      )
+    ).create!
+
+    assert auth.trans_id,
+      "should return a trans_id"
+    assert_equal 302, auth.response.code
+    assert_equal 'INFORMATION STORED', auth.message
+  end
+
+  def approved_test_amount
+    v = rand(1..10000)
+    (v.even? ? v+1 : v) * 100
+  end
+
+  def denied_test_amount
+    approved_test_amount + 100
+  end
 end
