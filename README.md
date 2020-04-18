@@ -26,30 +26,62 @@ Bluepay.account_secret = "supersecret"
 Bluepay.mode = :live
 
 
-Bluepay::Transaction.new(
-  amount: 1000,
+auth = Bluepay::Auth.new(
+  amount: '0.00',
   source: Bluepay::Card.new(
-    # trans_id / card numbers
-    name: '',
-    address: ''
+    cc_num: '4111111111111111',
+    cc_expires: '1227',
+    cvcvv2: "723",
+    name1: 'Bobby',
+    name2: 'Tester',
+    addr1: '123 Test St.',
+    addr2: 'Apt #500',
+    city: 'Testville',
+    state: 'IL',
+    zipcode: '94321',
+    country: 'USA',
+    phone: '123-123-1234',
+    email: 'test@bluepay.com',
+    company_name: ''
   )
 ).create!
 
+auth.trans_id
+#=> "10080152343"
+
+report = Bluepay::Report.generate!(
+  transaction_id: '10008..',
+  starts_on: Date.new
+  ends_on: Date.new
+)
+report.rows.first.id
+#=> "10080152343"
+
+report.rows.first
+# => #<OpenStruct id="100867577224", payment_type="CREDIT", trans_type="AUTH", amount="0.00", card_type="VISA", payment_account="xxxxxxxxxxxx1111", order_id="100867577224", invoice_id="100867577224", custom_id="", custom_id2="", master_id="", status="1", f_void="", message="INFORMATION STORED", origin="bp10emu", issue_date="2020-04-06 11:17:25", settle_date="", rebilling_id="", settlement_id="", card_expire="1225", bank_name="", addr1="123 Test St.", addr2="Apt #500", city="Testville", state="IL", zip="54321", phone="123-123-1234", email="test@bluepay.com", auth_code="", name1="Bob", name2="Tester", company_name="", memo="", backend_id="", doc_type="", f_captured="", avs_result="_", cvv_result="_", card_present="0", merchdata="", level_3_data="", remote_ip="75.139.119.161", connected_ip="75.139.119.161", level_2_data="">
+
+# TODO
+report = Bluepay::Report.generate!(
+  transaction_id: '10008..',
+  starts_on: Date.new
+  ends_on: Date.new
+)
+
+# TODO
 Bluepay::Card.new(
   # card num
 ).save!
+
+# TODO
 Bluepay::BankAccount.new(
   # routing, account etc
 ).save!
-# => card with trans_id (call auth)
+#=> card with trans_id (call auth)
+
+# TODO
 Bluepay::Transaction.retrieve('10080152343') # trans_id - via stq
 # => Transaction
-Bluepay::Report.retrieve(
-  id: '10008..',
-  starts_on: Date.new
-  ends_on: Date.new
-) # trans_id
-#=> <instnace of Report>.lines
+
 ```
 
 ## Development

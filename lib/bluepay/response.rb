@@ -15,7 +15,7 @@ module Bluepay
 
     def bluepay_data
       require 'csv'
-      csv = CSV.parse(response.body, headers: true)
+      CSV.parse(response.body, headers: true)
     end
 
     def params

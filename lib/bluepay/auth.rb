@@ -3,7 +3,7 @@ module Bluepay
     include BP10EMU
 
     def initialize(*args)
-      super *args
+      super(*args)
       @params[:transaction_type] = 'AUTH'
       @params[:rrno] = nil
     end

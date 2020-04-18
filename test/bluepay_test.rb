@@ -45,6 +45,18 @@ class BluepayTest < Minitest::Test
       'should should have an id'
   end
 
+  def test_run_settled_transaction_report
+    report = Bluepay::Report.generate!(
+      query_by_settlement: '1',
+      report_start_date: '2020-04-01',
+      report_end_date: '2020-04-30'
+    )
+    assert report.rows.any?,
+      'should have some data'
+    assert report.rows.first.settlement_id,
+      'should should have a settlement id'
+  end
+
   def approved_test_amount
     v = rand(1..10000)
     (v.even? ? v+1 : v) * 100
