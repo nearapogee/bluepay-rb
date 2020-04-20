@@ -42,6 +42,9 @@ module Bluepay
     def rows
       response.data
     end
+
+    def []=(key) # TODO lookup by id (trans_id)
+    end
     
   end
 end
