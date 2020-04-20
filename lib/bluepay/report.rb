@@ -11,6 +11,10 @@ module Bluepay
 
     def initialize(params={})
       @params = params
+
+      @params[:mode] ||= Bluepay.mode.to_s.upcase
+      @params[:tps_hash_type] ||= Bluepay.hash_type
+      @params[:responseversion] ||= Bluepay.response_version
     end
 
     def bluepay_params
@@ -20,9 +24,6 @@ module Bluepay
         memo
       }
 
-      _bluepay_params['MODE'] ||= Bluepay.mode.to_s.upcase
-      _bluepay_params['TPS_HASH_TYPE'] ||= Bluepay.hash_type
-      _bluepay_params['RESPONSEVERSION'] ||= Bluepay.response_version
       _bluepay_params['TAMPER_PROOF_SEAL'] = tps(
         _bluepay_params['TPS_HASH_TYPE'],
         _bluepay_params['REPORT_START_DATE'],

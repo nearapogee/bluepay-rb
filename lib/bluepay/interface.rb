@@ -36,6 +36,8 @@ module Bluepay
       self.class::PATH
     end
     
+    # DEPRICATED
+    #
     def query
       URI.encode_www_form(data)
     end

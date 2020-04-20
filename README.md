@@ -49,6 +49,7 @@ auth = Bluepay::Auth.new(
 auth.trans_id
 #=> "10080152343"
 
+# 
 report = Bluepay::Report.generate!(
   query_by_settlement: '1',
   report_start_date: '2020-04-01',
