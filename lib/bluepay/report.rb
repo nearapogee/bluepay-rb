@@ -42,6 +42,10 @@ module Bluepay
     def rows
       response.data
     end
+
+    def [](id)
+      response.data.first { |row| row.id == id }
+    end
     
   end
 end

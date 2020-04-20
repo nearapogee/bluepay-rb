@@ -36,7 +36,7 @@ module Bluepay
       self.class::PATH
     end
     
-    # DEPRICATED
+    # DEPRECATED
     #
     def query
       URI.encode_www_form(data)
