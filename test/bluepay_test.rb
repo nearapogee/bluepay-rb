@@ -54,7 +54,20 @@ class BluepayTest < Minitest::Test
     assert report.rows.any?,
       'should have some data'
     assert report.rows.first.settlement_id,
-      'should should have a settlement id'
+      'should have a settlement id'
+  end
+
+  def test_index_transaction_report_by_id
+    report = Bluepay::Report.generate!(
+      report_start_date: '2020-04-01',
+      report_end_date: '2020-04-30'
+    )
+
+    id = report.rows.first.id
+    refute report[id].nil?,
+      'transaction id should index report'
+    refute report[id].amount.nil?,
+      'transaction details should be available'
   end
 
   def approved_test_amount

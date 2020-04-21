@@ -43,7 +43,8 @@ module Bluepay
       response.data
     end
 
-    def []=(key) # TODO lookup by id (trans_id)
+    def [](id)
+      response.data.first { |row| row.id == id }
     end
     
   end
