@@ -26,6 +26,15 @@ module Bluepay
       self
     end
 
+    convert :amount, ->(amount) {
+      case amount
+      when Integer then amount.to_s.rjust(3, '0').insert(-3, '.')
+      when Float then "%.2f" % amount
+      else
+        amount
+      end
+    }
+
     def request_params
       bluepay_params.
         merge(source.bluepay_params).

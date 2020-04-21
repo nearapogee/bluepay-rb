@@ -1,3 +1,5 @@
+require 'date'
+
 module Bluepay
   class Report < Base
     include BPDAILYREPORT2
@@ -9,6 +11,19 @@ module Bluepay
     def initialize(params={})
       super(params)
     end
+
+    convert :report_start_date, :report_end_date, ->(date) {
+      case date
+      when Date, DateTime then date.strftime("%F %T")
+      else
+        date
+      end
+    }
+
+    convert :query_by_settlement,
+      :query_by_hierarchy,
+      :exclude_errors,
+      BOOLEAN_CONVERTER
 
     def request_params
       bluepay_params.

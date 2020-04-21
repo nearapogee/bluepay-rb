@@ -3,7 +3,8 @@ module Bluepay
 
     def tps(*keys)
       type = self.params[:tps_hash_type]
-      args = keys.map {|k| self.params[k] }
+      _params = self.converted_params
+      args = keys.map {|k| _params[k] }
       { 'TAMPER_PROOF_SEAL' => hash(type, *args) }
     end
 

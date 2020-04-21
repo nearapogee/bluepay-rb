@@ -100,6 +100,12 @@ Bluepay::Transaction.retrieve('10080152343') # trans_id - via stq
 
 ```
 
+## Bluepay Documentation
+
+- https://www.bluepay.com/sites/default/files/documentation/BluePay_bp10emu/BluePay%201-0%20Emulator.txt
+- https://www.bluepay.com/sites/default/files/documentation/BluePay_stq/BluePay_Single_Transaction_Query.txt
+- https://www.bluepay.com/sites/default/files/documentation/BluePay_bpdailyreport2/bpdailyreport2.pdf
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run

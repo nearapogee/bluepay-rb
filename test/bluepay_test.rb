@@ -9,23 +9,7 @@ class BluepayTest < Minitest::Test
     auth = Bluepay::Auth.new(
       amount: "0.00",
       rrno: nil,
-
-      source: Bluepay::Card.new(
-        cc_num: '4111111111111111',
-        cc_expires: '1227',
-        cvcvv2: "723",
-        name1: 'Bobby',
-        name2: 'Tester',
-        addr1: '123 Test St.',
-        addr2: 'Apt #500',
-        city: 'Testville',
-        state: 'IL',
-        zipcode: '94321',
-        country: 'USA',
-        phone: '123-123-1234',
-        email: 'test@bluepay.com',
-        company_name: ''
-      )
+      source: card
     ).create!
 
     assert auth.trans_id,
@@ -38,23 +22,19 @@ class BluepayTest < Minitest::Test
     sale = Bluepay::Sale.new(
       amount: "55.00",
       rrno: nil,
+      source: card
+    ).create!
 
-      source: Bluepay::Card.new(
-        cc_num: '4111111111111111',
-        cc_expires: '1227',
-        cvcvv2: "723",
-        name1: 'Bobby',
-        name2: 'Tester',
-        addr1: '123 Test St.',
-        addr2: 'Apt #500',
-        city: 'Testville',
-        state: 'IL',
-        zipcode: '94321',
-        country: 'USA',
-        phone: '123-123-1234',
-        email: 'test@bluepay.com',
-        company_name: ''
-      )
+    assert sale.trans_id, sale.response.bluepay_params.inspect
+    assert_equal 302, sale.response.code
+    assert_equal 'Approved Sale', sale.message
+  end
+
+  def test_run_sale_converted
+    sale = Bluepay::Sale.new(
+      amount: 5500,
+      rrno: nil,
+      source: card
     ).create!
 
     assert sale.trans_id, sale.response.bluepay_params.inspect
@@ -66,6 +46,18 @@ class BluepayTest < Minitest::Test
     report = Bluepay::Report.generate!(
       report_start_date: '2020-04-01',
       report_end_date: '2020-04-30'
+    )
+    assert report.rows.any?,
+      'should have some data'
+    assert report.rows.first.id,
+      'should should have an id'
+  end
+
+  def test_run_transaction_report_converted
+    report = Bluepay::Report.generate!(
+      query_by_settlement: true,
+      report_start_date: Date.new(2020,04,01),
+      report_end_date: Date.new(2020,04,30)
     )
     assert report.rows.any?,
       'should have some data'
@@ -97,6 +89,26 @@ class BluepayTest < Minitest::Test
     refute report[id].amount.nil?,
       'transaction details should be available'
   end
+
+  def card
+    Bluepay::Card.new(
+      cc_num: '4111111111111111',
+      cc_expires: '1227',
+      cvcvv2: "723",
+      name1: 'Bobby',
+      name2: 'Tester',
+      addr1: '123 Test St.',
+      addr2: 'Apt #500',
+      city: 'Testville',
+      state: 'IL',
+      zipcode: '94321',
+      country: 'USA',
+      phone: '123-123-1234',
+      email: 'test@bluepay.com',
+      company_name: ''
+    )
+  end
+
 
   def approved_test_amount
     v = rand(1..10000)
