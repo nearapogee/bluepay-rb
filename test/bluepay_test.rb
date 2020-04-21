@@ -34,6 +34,34 @@ class BluepayTest < Minitest::Test
     assert_equal 'INFORMATION STORED', auth.message
   end
 
+  def test_run_sale
+    sale = Bluepay::Sale.new(
+      amount: "55.00",
+      rrno: nil,
+
+      source: Bluepay::Card.new(
+        cc_num: '4111111111111111',
+        cc_expires: '1227',
+        cvcvv2: "723",
+        name1: 'Bobby',
+        name2: 'Tester',
+        addr1: '123 Test St.',
+        addr2: 'Apt #500',
+        city: 'Testville',
+        state: 'IL',
+        zipcode: '94321',
+        country: 'USA',
+        phone: '123-123-1234',
+        email: 'test@bluepay.com',
+        company_name: ''
+      )
+    ).create!
+
+    assert sale.trans_id, sale.response.bluepay_params.inspect
+    assert_equal 302, sale.response.code
+    assert_equal 'Approved Sale', sale.message
+  end
+
   def test_run_transaction_report
     report = Bluepay::Report.generate!(
       report_start_date: '2020-04-01',

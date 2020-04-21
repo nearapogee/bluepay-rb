@@ -6,7 +6,7 @@ module Bluepay
     def data
       {
         'MERCHANT' => Bluepay.account_id
-      }.merge(bluepay_params)
+      }.merge(request_params)
     end
 
   end

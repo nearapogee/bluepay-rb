@@ -1,9 +1,9 @@
 module Bluepay
-  class Auth < TransactionBase
+  class Sale < TransactionBase
 
     def initialize(*args)
       super(*args)
-      self.params[:transaction_type] = 'AUTH'
+      self.params[:transaction_type] = 'SALE'
     end
 
   end

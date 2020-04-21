@@ -1,9 +1,9 @@
 require "bluepay/version"
+
 require "bluepay/interface"
-require "bluepay/transaction"
+require "bluepay/base"
+
 require "bluepay/card"
-require "bluepay/request"
-require "bluepay/response"
 require "bluepay/report"
 
 module Bluepay

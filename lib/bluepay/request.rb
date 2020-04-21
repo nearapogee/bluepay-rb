@@ -17,7 +17,7 @@ module Bluepay
       @action = action
     end
 
-    def post
+    def execute!
       uri = URI::HTTPS.build(
         host: HOST,
         path: action.path
