@@ -57,6 +57,7 @@ class BluepayTest < Minitest::Test
     ).create!
 
     assert sale.trans_id, sale.response.data.inspect
+    assert_equal "55.00", sale.amount
     assert_equal 302, sale.response.code
     assert_equal 'Approved Sale', sale.message
   end
@@ -126,11 +127,52 @@ class BluepayTest < Minitest::Test
       'should have returned result'
   end
 
+  def test_card_save
+    _card = card
+    assert _card.save!
+    assert _card.trans_id
+    assert _card.rrno
+
+    id = _card.trans_id
+    assert _card.save!
+    assert_equal id, _card.trans_id
+  end
+
+  def test_bank_account_save
+    _bank_account = bank_account
+    assert _bank_account.save!
+    assert _bank_account.trans_id
+    assert _bank_account.rrno
+
+    id = _bank_account.trans_id
+    assert _bank_account.save!
+    assert_equal id, _bank_account.trans_id
+  end
+
   def card
     Bluepay::Card.new(
       cc_num: '4111111111111111',
       cc_expires: '1227',
       cvcvv2: "723",
+      name1: 'Bobby',
+      name2: 'Tester',
+      addr1: '123 Test St.',
+      addr2: 'Apt #500',
+      city: 'Testville',
+      state: 'IL',
+      zipcode: '94321',
+      country: 'USA',
+      phone: '123-123-1234',
+      email: 'test@bluepay.com',
+      company_name: ''
+    )
+  end
+
+  def bank_account
+    Bluepay::BankAccount.new(
+      ach_routing: '123123123',
+      ach_account: '123456789',
+      ach_account_type: 'C',
       name1: 'Bobby',
       name2: 'Tester',
       addr1: '123 Test St.',

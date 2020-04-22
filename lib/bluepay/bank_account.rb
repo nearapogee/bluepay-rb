@@ -1,12 +1,12 @@
 module Bluepay
-  class Card
+  class BankAccount
     include Parameters
 
     attr_reader :auth
 
     def initialize(params={})
       self.params = params
-      self.params[:payment_type] = 'CREDIT'
+      self.params[:payment_type] = 'ACH'
     end
 
     def save!
