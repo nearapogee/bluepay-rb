@@ -4,7 +4,6 @@ require "bluepay/interface"
 require "bluepay/base"
 
 require "bluepay/card"
-require "bluepay/report"
 
 module Bluepay
 

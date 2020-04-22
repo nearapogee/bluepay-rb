@@ -1,4 +1,10 @@
 module Bluepay
+  # bpdailyreport2 returns csv in body
+  # bp10emu returns 302, html body, details are in Location header
+  # stq returns query string in body
+  #
+  # #data returns a unified merge of all the data sources, with tabular data
+  # under the key :rows as an array of OpenStruct instances
   class Response
 
     LOCATION = 'Location'.freeze
@@ -9,25 +15,35 @@ module Bluepay
       @response = http
     end
 
-    def bluepay_params
-      URI.decode_www_form(URI(response['Location'].to_s).query).sort.to_h
+    def location_query_params
+      URI.decode_www_form(URI(response['Location']).query).sort.to_h rescue {}
     end
 
-    def bluepay_data
-      require 'csv'
-      CSV.parse(response.body, headers: true)
+    def body_params
+      URI.decode_www_form(response.body).sort.to_h rescue {}
     end
 
     def params
-      bluepay_params.inject({}) { |memo, kv|
+      location_query_params.merge(body_params).inject({}) { |memo, kv|
         k, v = kv
         memo[k.to_s.downcase.to_sym] = v
         memo
       }
     end
 
+    def body_csv
+      require 'csv'
+      CSV.parse(response.body, headers: true) rescue Array.new
+    end
+
+    def body_rows
+      body_csv.each.map {|r| OpenStruct.new(r.to_h)}
+    end
+
     def data
-      bluepay_data.each.map {|r| OpenStruct.new(r.to_h)}
+      params.to_h.merge(
+        rows: body_rows
+      )
     end
 
     def code

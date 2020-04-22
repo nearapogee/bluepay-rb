@@ -36,15 +36,22 @@ module Bluepay
     def generate!
       @request = Request.new(self)
       @response = request.execute!
+
+      _data = response.data
+      (class << self; self; end).class_eval do
+        _data.each { |k, v| define_method(k) { v } }
+      end
+
       self
     end
 
-    def rows
-      response.data
-    end
-
     def [](id)
-      response.data.first { |row| row.id == id }
+      return nil unless self.respond_to?(:rows)
+      @_lookup ||= self.rows.inject({}) { |memo, row|
+        memo[row.id] = row
+        memo
+      }
+      @_lookup[id]
     end
 
   end

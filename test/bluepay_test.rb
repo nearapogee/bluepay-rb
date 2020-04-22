@@ -25,7 +25,7 @@ class BluepayTest < Minitest::Test
       source: card
     ).create!
 
-    assert sale.trans_id, sale.response.bluepay_params.inspect
+    assert sale.trans_id, sale.response.data.inspect
     assert_equal 302, sale.response.code
     assert_equal 'Approved Sale', sale.message
   end
@@ -37,7 +37,7 @@ class BluepayTest < Minitest::Test
       source: card
     ).create!
 
-    assert sale.trans_id, sale.response.bluepay_params.inspect
+    assert sale.trans_id, sale.response.data.inspect
     assert_equal 302, sale.response.code
     assert_equal 'Approved Sale', sale.message
   end
@@ -88,6 +88,23 @@ class BluepayTest < Minitest::Test
       'transaction id should index report'
     refute report[id].amount.nil?,
       'transaction details should be available'
+  end
+
+  def test_single_transaction_report_by_id
+    trans = Bluepay::Transaction.retrieve!('100873698090')
+
+    assert trans.id,
+      'should have returned result'
+  end
+
+  def test_single_transaction_report
+    trans = Bluepay::Transaction.query!(
+      report_start_date: '2020-04-22',
+      report_end_date: '2020-04-23',
+      limit_one: true
+    )
+    assert trans.id,
+      'should have returned result'
   end
 
   def card

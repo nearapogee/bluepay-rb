@@ -22,3 +22,5 @@ module Bluepay
 end
 
 require 'bluepay/transaction_base'
+require 'bluepay/transaction'
+require 'bluepay/report'

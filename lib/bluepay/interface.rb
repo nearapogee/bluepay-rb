@@ -19,3 +19,4 @@ end
 
 require 'bluepay/BP10EMU'
 require 'bluepay/BPDAILYREPORT2'
+require 'bluepay/STQ'

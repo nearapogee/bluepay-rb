@@ -18,8 +18,8 @@ module Bluepay
     def create!
       @request = Request.new(self)
       @response = request.execute!
-      _params = response.params
 
+      _params = response.params
       (class << self; self; end).class_eval do
         _params.each { |k, v| define_method(k) { v } }
       end
