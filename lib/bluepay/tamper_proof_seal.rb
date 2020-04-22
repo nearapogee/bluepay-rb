@@ -13,24 +13,24 @@ module Bluepay
 
       case type
       when HMAC_SHA512, nil
-        OpenSSL::HMAC.hexdigest('sha512', Bluepay.account_secret, _args)
-      when 'HMAC_SHA256'
-        OpenSSL::HMAC.hexdigest('sha256', Bluepay.account_secret, _args)
-      when 'SHA512'
+        OpenSSL::HMAC.hexdigest('sha512', Bluepay.secret_key, _args)
+      when HMAC_SHA256
+        OpenSSL::HMAC.hexdigest('sha256', Bluepay.secret_key, _args)
+      when SHA512
         Digest::SHA512.hexdigest([
-          Bluepay.account_secret,
+          Bluepay.secret_key,
           _args,
           type
         ].join)
-      when 'SHA256'
+      when SHA256
         then Digest::SHA256.hexdigest([
-          Bluepay.account_secret,
+          Bluepay.secret_key,
           _args,
           type
         ].join)
-      when 'MD5'
+      when MD5
         Digest::MD5.hexdigest([
-          Bluepay.account_secret,
+          Bluepay.secret_key,
           _args,
           type
         ].join)

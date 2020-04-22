@@ -22,9 +22,8 @@ Or install it yourself as:
 
 ```ruby
 Bluepay.account_id = "blah"
-Bluepay.account_secret = "supersecret"
+Bluepay.secret_key = "supersecret"
 Bluepay.mode = :live
-
 
 auth = Bluepay::Auth.new(
   amount: '0.00',
@@ -180,7 +179,7 @@ Add a `.env` to run tests.
 
 ```
 BLUEPAY_ACCOUNT_ID=100....
-BLUEPAY_ACCOUNT_SECRET=WCP0....
+BLUEPAY_SECRET_KEY=WCP0....
 ```
 
 Run tests with:

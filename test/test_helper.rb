@@ -9,6 +9,6 @@ require 'pry'
 require "minitest/autorun"
 
 Bluepay.account_id = ENV['BLUEPAY_ACCOUNT_ID']
-Bluepay.account_secret = ENV['BLUEPAY_ACCOUNT_SECRET']
+Bluepay.secret_key = ENV['BLUEPAY_SECRET_KEY']
 Bluepay.mode = :test
 Bluepay.hash_type = Bluepay::HMAC_SHA512
