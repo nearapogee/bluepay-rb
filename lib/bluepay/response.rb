@@ -46,6 +46,10 @@ module Bluepay
       )
     end
 
+    def to_h
+      data
+    end
+
     def code
       response.code.to_i
     end

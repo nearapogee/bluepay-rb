@@ -6,8 +6,6 @@ module Bluepay
 
     def initialize(*args)
       super(*args)
-      self.params[:rrno] = nil
-
       self.source = params.delete(:source)
     end
 
@@ -26,6 +24,10 @@ module Bluepay
       self
     end
 
+    def to_h
+      response.data
+    end
+
     convert :amount, ->(amount) {
       case amount
       when Integer then amount.to_s.rjust(3, '0').insert(-3, '.')
@@ -36,19 +38,20 @@ module Bluepay
     }
 
     def request_params
-      bluepay_params.
-        merge(source.bluepay_params).
-        merge(tps(
-          :transaction_type,
-          :amount,
-          :rebilling,
-          :reb_first_date,
-          :reb_expr,
-          :reb_cycles,
-          :reb_amount,
-          :rrno,
-          :mode
-        ))
+      _params = bluepay_params
+      _params.merge!(source.bluepay_params) if source
+      _params.merge!(tps(
+        :transaction_type,
+        :amount,
+        :rebilling,
+        :reb_first_date,
+        :reb_expr,
+        :reb_cycles,
+        :reb_amount,
+        :rrno,
+        :mode
+      ))
+      _params
     end
 
   end

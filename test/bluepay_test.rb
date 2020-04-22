@@ -18,6 +18,24 @@ class BluepayTest < Minitest::Test
     assert_equal 'INFORMATION STORED', auth.message
   end
 
+  def test_run_sale_with_trans_id
+    auth = Bluepay::Auth.new(
+      amount: "0.00",
+      source: card
+    ).create!
+    assert auth.trans_id,
+      "should return a trans_id"
+
+    sale = Bluepay::Sale.new(
+      amount: "55.00",
+      rrno: auth.trans_id
+    ).create!
+
+    assert sale.trans_id, sale.response.data.inspect
+    assert_equal 302, sale.response.code
+    assert_equal 'Approved Sale', sale.message
+  end
+
   def test_run_sale
     sale = Bluepay::Sale.new(
       amount: "55.00",
@@ -28,6 +46,7 @@ class BluepayTest < Minitest::Test
     assert sale.trans_id, sale.response.data.inspect
     assert_equal 302, sale.response.code
     assert_equal 'Approved Sale', sale.message
+    assert sale.to_h
   end
 
   def test_run_sale_converted
