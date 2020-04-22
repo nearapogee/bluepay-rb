@@ -4,12 +4,6 @@ module Bluepay
   class Request
     HOST = 'secure.bluepay.com'.freeze
     PORT = 443.freeze
-    CERT = File.join(
-      File.expand_path(File.dirname(__FILE__)),
-      '../..',
-      'cacert.pem'
-    ).freeze
-
 
     attr_reader :action
 
@@ -30,13 +24,8 @@ module Bluepay
 
       res = Net::HTTP.start(
         HOST, PORT,
-        use_ssl: true#,
-        #ca_file: CERT,
-        #verify_mode: OpenSSL::SSL::VERIFY_PEER,
-        #verify_depth: 3
-      ) { |http|
-        http.request(req)
-      }
+        use_ssl: true,
+      ) { |http| http.request(req) }
 
       Response.new(res)
     end
