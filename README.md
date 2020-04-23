@@ -155,11 +155,19 @@ pass in approriate date or time objects in Central Timezone or offset.
 ## TODOS
 
 - Response Parameter Conversion (i.e. "10.00" to 1000)
+- Rebilling
 
 
-## Bluepay Documentation
+## Bluepay Links and Documentation
 
+Links
+- https://secure.bluepay.com/login
 
+Documentation
+- https://www.bluepay.com/developers/full-api-documentation/
+- https://www.bluepay.com/developers/testing/
+
+APIs
 - https://www.bluepay.com/sites/default/files/documentation/BluePay_bp10emu/BluePay%201-0%20Emulator.txt
 - https://www.bluepay.com/sites/default/files/documentation/BluePay_stq/BluePay_Single_Transaction_Query.txt
 - https://www.bluepay.com/sites/default/files/documentation/BluePay_bpdailyreport2/bpdailyreport2.pdf
@@ -172,6 +180,10 @@ prompt that will allow you to experiment.
 
 The gem doesn't come with default credentials for BluePay. You will need to
 provide those
+
+### Bluepay Test Forms
+
+https://www.bluepay.com/sites/default/files/documentation/bpdailyreport2formHMAC_SHA512.htm
 
 ## Testing
 

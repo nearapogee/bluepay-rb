@@ -6,8 +6,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Matt Smith"]
   spec.email         = ["matt@nearapogee.com"]
 
-  spec.cert_chain    = ['certs/nearapogee.pem']
-  spec.signing_key = File.expand_path("~/.ssh/gem-private_key.pem") if $0 =~ /gem\z/
+  #spec.cert_chain    = ['certs/nearapogee.pem']
+  #spec.signing_key = File.expand_path("~/.ssh/gem-private_key.pem") if $0 =~ /gem\z/
 
   spec.summary       = %q{Simple Bluepay API Wrapper}
   spec.description   = %q{Bluepay Payment Gateway API wrapper written for Ruby.}
