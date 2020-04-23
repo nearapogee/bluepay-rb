@@ -6,9 +6,14 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Matt Smith"]
   spec.email         = ["matt@nearapogee.com"]
 
+  spec.cert_chain    = ['certs/nearapogee-matt.pem']
+  spec.signing_key = File.expand_path("~/.ssh/gem-private_key.pem") if $0 =~ /gem\z/
+
   spec.summary       = %q{Simple Bluepay API Wrapper}
   spec.description   = %q{Bluepay Payment Gateway API wrapper written for Ruby.}
   spec.homepage      = "https://github.com/nearapogee/bluepay-rb"
+  spec.license       = "MIT"
+
   spec.required_ruby_version = Gem::Requirement.new(">= 2.3.0")
 
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
@@ -26,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency 'binding_of_caller'
-  spec.add_development_dependency 'pry'
-  spec.add_development_dependency 'dotenv'
+  spec.add_development_dependency 'binding_of_caller', '~> 0.8.0'
+  spec.add_development_dependency 'pry', '~> 0.13.1'
+  spec.add_development_dependency 'dotenv', '~> 2.7.5'
 end
