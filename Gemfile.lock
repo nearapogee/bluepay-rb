@@ -16,17 +16,17 @@ GEM
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    rake (12.3.2)
+    rake (12.3.3)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  binding_of_caller
+  binding_of_caller (~> 0.8.0)
   bluepay-rb!
-  dotenv
+  dotenv (~> 2.7.5)
   minitest (~> 5.0)
-  pry
+  pry (~> 0.13.1)
   rake (~> 12.0)
 
 BUNDLED WITH
