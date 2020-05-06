@@ -47,6 +47,52 @@ auth = Bluepay::Auth.new(
 
 auth.trans_id
 #=> "10080152343"
+auth.message
+#=> "INFORMATION STORED"
+
+auth = Bluepay::Auth.new(
+  amount: 5500, # $55.00
+  source: card
+).create!
+
+auth.trans_id
+#=> "10080152349"
+auth.message
+#=> 'Approved Auth'
+
+capture = Bluepay::Capture.new(
+  rrno: auth.trans_id
+).create!
+
+capture.trans_id
+#=> "10080252348"
+capture.message
+#=> 'Approved Capture'
+
+sale = Bluepay::Sale.new(
+  amount: 2500,
+  responsetype: 'DIRECT',
+  source: card
+).create!
+
+void = Bluepay::Void.create!(
+  rrno: sale.trans_id
+)
+
+sale = Bluepay::Sale.new(
+  amount: 2500,
+  responsetype: 'DIRECT',
+  source: card
+).create!
+
+# NOTE: Cannot change amount unless the sale is settled.
+refund = Bluepay::Refund.create!(
+  rrno: sale.trans_id,
+  amount: 1000
+)
+
+refund.message
+#=> "Approved Void" or "Approved Refund" # depends on if settled.
 
 report = Bluepay::Report.generate!(
   query_by_settlement: true,
@@ -151,6 +197,15 @@ the Bluepay API.
 Bluepay uses the Central Timezone (US). Some parameters will convert time/date
 like objects to strings but will use the given objects hours. As such, you must
 pass in approriate date or time objects in Central Timezone or offset.
+
+### Voids and Refunds
+
+Voids work on unsettled transactions. Refunds work on settled transactions.
+
+That being said, you can Refund the full amount of an unsettled transaction, but
+if the amount is changed it will fail with a `message` of
+`Refund/VOID amount cannot exceed original charge amount`.
+
 
 ## TODOS
 

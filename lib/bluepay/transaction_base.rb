@@ -59,3 +59,6 @@ end
 
 require 'bluepay/auth'
 require 'bluepay/sale'
+require 'bluepay/capture'
+require 'bluepay/void'
+require 'bluepay/refund'

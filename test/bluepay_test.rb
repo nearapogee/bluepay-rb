@@ -18,6 +18,57 @@ class BluepayTest < Minitest::Test
     assert_equal 'INFORMATION STORED', auth.message
   end
 
+  def test_run_auth_direct
+    auth = Bluepay::Auth.new(
+      amount: "0.00",
+      responsetype: 'DIRECT',
+      source: card
+    ).create!
+
+    assert auth.trans_id,
+      "should return a trans_id"
+    assert_equal 200, auth.response.code
+    assert_equal 'INFORMATION STORED', auth.message
+  end
+
+  def test_run_auth_capture_direct
+    auth = Bluepay::Auth.new(
+      amount: "55.00",
+      responsetype: 'DIRECT',
+      source: card
+    ).create!
+
+    assert auth.trans_id,
+      "should return a trans_id"
+    assert_equal 200, auth.response.code
+    assert_equal 'Approved Auth', auth.message
+
+    capture = Bluepay::Capture.new(
+      rrno: auth.trans_id,
+      amount: "55.00",
+      responsetype: 'DIRECT',
+    ).create!
+
+    assert capture.trans_id,
+      "should return a trans_id"
+    assert_equal 200, capture.response.code
+    assert_equal 'Approved Capture', capture.message
+  end
+
+  def test_run_auth_direct_fail
+    auth = Bluepay::Auth.new(
+      amount: "INVALID2.00",
+      responsetype: 'DIRECT',
+      source: card
+    ).create!
+
+    assert_equal 200, auth.response.code
+    assert_raises(NoMethodError) do
+      auth.trans_id
+    end
+    assert_equal 'INVALID AMOUNT FORMAT', auth.message
+  end
+
   def test_run_sale_with_trans_id
     auth = Bluepay::Auth.new(
       amount: "0.00",
@@ -60,6 +111,79 @@ class BluepayTest < Minitest::Test
     assert_equal "55.00", sale.amount
     assert_equal 302, sale.response.code
     assert_equal 'Approved Sale', sale.message
+  end
+
+  def test_run_sale_void_direct
+    sale = Bluepay::Sale.new(
+      amount: 2500,
+      responsetype: 'DIRECT',
+      source: card
+    ).create!
+
+    assert sale.trans_id,
+      "should return a trans_id"
+    assert_equal 200, sale.response.code
+    assert_equal 'Approved Sale', sale.message
+
+    trans = Bluepay::Transaction.retrieve!(sale.trans_id)
+    assert_equal '', trans.settlement_id
+    assert_equal '', trans.settle_date
+
+    void = Bluepay::Void.create!(
+      rrno: sale.trans_id
+    )
+    assert_equal 'Approved Void', void.message
+  end
+
+  def test_run_sale_refund_direct
+    sale = Bluepay::Sale.new(
+      amount: 2500,
+      responsetype: 'DIRECT',
+      source: card
+    ).create!
+
+    assert sale.trans_id,
+      "should return a trans_id"
+    assert_equal 200, sale.response.code
+    assert_equal 'Approved Sale', sale.message
+
+    trans = Bluepay::Transaction.retrieve!(sale.trans_id)
+    assert_equal '', trans.settlement_id
+    assert_equal '', trans.settle_date
+
+    refund = Bluepay::Refund.create!(
+      rrno: sale.trans_id,
+      responsetype: 'DIRECT',
+      amount: 2500
+    )
+    assert_equal 200, refund.response.code
+    assert_equal 'Approved Void', refund.message
+  end
+
+  def test_run_sale_refund_partial_direct
+    sale = Bluepay::Sale.new(
+      amount: 1500,
+      responsetype: 'DIRECT',
+      source: card
+    ).create!
+
+    assert sale.trans_id,
+      "should return a trans_id"
+    assert_equal 200, sale.response.code
+    assert_equal 'Approved Sale', sale.message
+
+    trans = Bluepay::Transaction.retrieve!(sale.trans_id)
+    assert_equal '', trans.settlement_id
+    assert_equal '', trans.settle_date
+
+    refund = Bluepay::Refund.create!(
+      rrno: sale.trans_id,
+      responsetype: 'DIRECT',
+      amount: 2500
+    )
+    assert_equal 200, refund.response.code
+    assert_equal 'Refund/VOID amount cannot exceed original charge amount',
+      refund.message
   end
 
   def test_run_transaction_report
